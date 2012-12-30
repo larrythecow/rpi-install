@@ -21,8 +21,7 @@ passwd || exit 1
 
 echo -e "\tinstalling base packages"
 apt-get update || exit 1
-apt-get install git vim unzip || exit 1
-apt-get install openssh-server openssh-client || exit 1
+apt-get install git vim unzip openssh-server openssh-client|| exit 1
 
 echo -e "\tinstalling bootloader and kernel"
 cd /usr/src || exit 1
