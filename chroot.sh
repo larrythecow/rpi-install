@@ -21,12 +21,12 @@ passwd || exit 1
 
 echo -e "\tinstalling base packages"
 apt-get update || exit 1
-apt-get install git vim unzip openssh-server openssh-client|| exit 1
+apt-get install git vim unzip openssh-server openssh-client tinc|| exit 1
 
 echo -e "\tinstalling bootloader and kernel"
 cd /usr/src || exit 1
 wget https://github.com/raspberrypi/firmware/archive/master.zip || exit 1
-unzip master.zip || exit 1
+unzip -q master.zip || exit 1
 cp /usr/src/firmware-master/boot/* /boot/ || exit 1
 cp -av /usr/src/firmware-master/modules/ /lib/ || exit 1
 
@@ -40,8 +40,7 @@ install /root/rpi-install/config/sshd_config	/etc/ssh/sshd_config
 #cp /etc/hosts /mnt/etc/ || exit 1
 install /proc/mounts  /etc/mtab
 
-echo -e "\tinstalling tinc"
-apt-get install tinc
+echo -e "\tconfiguring tinc"
 mkdir -p /etc/tinc/vpn/hosts/
 install /root/rpi-install/config/tinc-up	/etc/tinc/vpn/tinc-up
 install /root/rpi-install/config/tinc.conf	/etc/tinc/vpn/tinc.conf

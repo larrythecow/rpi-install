@@ -15,3 +15,4 @@ ToDo
 * we want color
 * finish tinc installation
 * add debugflag, and print to stdout and stderr
+* set locale
