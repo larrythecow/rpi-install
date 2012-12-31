@@ -1,4 +1,12 @@
 #! /bin/sh
+
+#
+#    Author: imran shamshad
+#    Email: sid@projekt-turm.de
+#    formating second partition with ext4
+#    commented out kpartx
+# Based on:
+
 # mkcard.sh v0.5
 # (c) Copyright 2009 Graeme Gregory <dp@xora.org.uk>
 # Licensed under terms of GPLv2
@@ -33,9 +41,9 @@ echo ,,,-
 sleep 1
 
 
-if [ -x `which kpartx` ]; then
-	kpartx -a ${DRIVE}
-fi
+#if [ -x `which kpartx` ]; then
+#	kpartx -a ${DRIVE}
+#fi
 
 # handle various device names.
 # note something like fdisk -l /dev/loop0 | egrep -E '^/dev' | cut -d' ' -f1 
@@ -67,14 +75,14 @@ if [ -b ${PARTITION1} ]; then
 	umount ${PARTITION1}
 	mkfs.vfat -F 32 -n "boot" ${PARTITION1}
 else
-	echo "Cant find boot partition in /dev"
+	echo "Cant find boot partition in /dev" || exit 1
 fi
 
 if [ -b ${PARITION2} ]; then
 	umount ${PARTITION2}
-	mke2fs -j -L "Angstrom" ${PARTITION2} 
+	mke2fs -j -t ext4 -L "root" ${PARTITION2} 
 else
-	echo "Cant find rootfs partition in /dev"
+	echo "Cant find rootfs partition in /dev" || exit 1
 fi
 
 

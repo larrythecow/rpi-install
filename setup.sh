@@ -19,29 +19,28 @@ function echocolor {
         echo -e "\033[32m$1\033[0m";
 }
 function cleanup {
-        echo -e "\033[31m installation canceled\033[0m";
+        echo -e "\033[31minstallation canceled\033[0m";
 }
 trap cleanup EXIT;
 
 echo -e "\033[32m";
-read -e -p "please enter device [/dev/sd[a-z]] " device;
-echo -e "WARNING!";
+read -e -p "please enter device [/dev/sd[a-z]]: " device;
+echo -e "\n\033[1;31mWARNING!\033[0;32m";
 echo -e "========";
-echo -e "This will overwrite data on \033[1;32m$device\033[0;32m irrevocably.\n";
+echo -e "This will overwrite data on \033[1;31m${device}\033[0;32m irrevocably.";
 read -p "Are you sure? (Type uppercase yes): " input;
 if [[ $input != "YES" ]] ; then
-	echo -e "\033[31m\tERROR\n\tIf you are sure, please type UPPERCASE yes\033[0m"
+	echo -e "\033[31m\tERROR\nIf you are sure, please type UPPERCASE yes\033[0m"
 	exit 1;
 fi
 echo -e "\033[0m";
 
 echocolor "installing necessery applications";
 apt-get update || exit 1
-apt-get install debootstrap dosfstools || exit 1
+apt-get install debootstrap dosfstools
 
-echocolor "formating disk";
-mkfs.vfat "${device}1" || exit 1
-mkfs.ext4 "${device}2" || exit 1
+echocolor "partitioning and formating disk";
+/root/rpi-install/3rdparty/omap3-mkcard.sh ${device} || exit 1
 
 echocolor "mounting disk";
 mount "${device}2" /mnt || exit 1

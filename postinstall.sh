@@ -16,31 +16,38 @@
 #    Author: imran shamshad
 #    Email: sid@projekt-turm.de
 
+function echocolor {
+        echo -e "\033[32m$1\033[0m";
+}
+function cleanup {
+        echo -e "\033[31minstallation canceled\033[0m";
+}
+trap cleanup EXIT;
+
+
 source /root/rpi-install/postinstall.conf
 
-echo "${Packages}"
-echo -e "\tplease enter new root password";
-passwd || exit 1
+echocolor "please enter new root password";
+passwd 
 
-echo -e "\tinstalling base packages"
+echocolor "installing base packages"
 apt-get update || exit 1
 apt-get install ${Packages} || exit 1
-dpkg-reconfigure locales
 
-echo -e "\tinstalling bootloader and kernel"
+echocolor "installing bootloader and kernel"
 cd /usr/src || exit 1
 wget -c https://github.com/raspberrypi/firmware/archive/master.zip || exit 1
 unzip -qq master.zip || exit 1
-cp /usr/src/firmware-master/boot/* /boot/ || exit 1
-cp -a /usr/src/firmware-master/modules/ /lib/ || exit 1
+rsync -a /usr/src/firmware-master/boot/* /boot/ || exit 1
+rsync -a /usr/src/firmware-master/modules/ /lib/ || exit 1
 
-echo -e "\tinstalling config files"
+echocolor "installing config files"
 rsync -a /root/rpi-install/config/* /
 install /proc/mounts  /etc/mtab
 echo ${hostname} > /etc/hostname
+locale-gen
 
-
-echo -e "\tconfiguring tinc"
+echocolor "configuring tinc"
 # update tinc.conf
 sed -i s/HOSTNAME/${hostname}/g /etc/tinc/vpn/tinc.conf
 sed -i s/VPN_DEV/${VPN_DEV}/g /etc/tinc/vpn/tinc.conf
@@ -56,4 +63,4 @@ echo "Port=${VPN_Port}" >> /etc/tinc/vpn/hosts/${hostname};
 echo "Subnet=${VPN_Subnet}" >> /etc/tinc/vpn/hosts/${hostname};
 echo "Compression=9" >> /etc/tinc/vpn/hosts/${hostname};
 
-echo -e "\tyou have to copy your public key to server!!!!";
+echocolor "you have to copy your public key to server!!!!\nplease ignore the following failture message";
