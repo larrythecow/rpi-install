@@ -32,10 +32,10 @@ cd /usr/src || exit 1
 wget -c https://github.com/raspberrypi/firmware/archive/master.zip || exit 1
 unzip -qq master.zip || exit 1
 cp /usr/src/firmware-master/boot/* /boot/ || exit 1
-cp -av /usr/src/firmware-master/modules/ /lib/ || exit 1
+cp -a /usr/src/firmware-master/modules/ /lib/ || exit 1
 
 echo -e "\tinstalling config files"
-rsync -av /root/rpi-install/config/* /
+rsync -a /root/rpi-install/config/* /
 install /proc/mounts  /etc/mtab
 echo ${hostname} > /etc/hostname
 
