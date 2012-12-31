@@ -16,31 +16,41 @@
 #    Author: imran shamshad
 #    Email: sid@projekt-turm.de
 
-source=setup.conf || echo "could not find configfile" ; exit 1
+source /root/rpi-install/setup.conf 
 
+echo "${Packages}"
 echo -e "\tplease enter new root password";
 passwd || exit 1
 
 echo -e "\tinstalling base packages"
 apt-get update || exit 1
-apt-get install git vim unzip openssh-server openssh-client tinc rsync|| exit 1
+apt-get install ${Packages} || exit 1
+dpkg-reconfigure locales
 
 echo -e "\tinstalling bootloader and kernel"
 cd /usr/src || exit 1
-wget https://github.com/raspberrypi/firmware/archive/master.zip || exit 1
-unzip -q master.zip || exit 1
+wget -c https://github.com/raspberrypi/firmware/archive/master.zip || exit 1
+unzip -qq master.zip || exit 1
 cp /usr/src/firmware-master/boot/* /boot/ || exit 1
 cp -av /usr/src/firmware-master/modules/ /lib/ || exit 1
 
 echo -e "\tinstalling config files"
-rsync  /root/rpi-install/config/* / -av
+rsync -av /root/rpi-install/config/* /
 install /proc/mounts  /etc/mtab
 echo ${hostname} > /etc/hostname
 
 
 echo -e "\tconfiguring tinc"
-sed s/HOSTNAME/${hostname}/ /etc/tinc/vpn/tinc.conf > /etc/tinc/vpn/tinc.conf
+# update tinc.conf
+sed -i s/HOSTNAME/${hostname}/g /etc/tinc/vpn/tinc.conf
+sed -i s/VPN_DEV/${VPN_DEV}/g /etc/tinc/vpn/tinc.conf
+# update tinc-up
+sed -i s/VPN_DEV/${VPN_DEV}/g /etc/tinc/vpn/tinc-up
+sed -i s/VPN_IP/${VPN_IP}/g /etc/tinc/vpn/tinc-up
+sed -i s/VPN_Netmask/${VPN_Netmask}/g /etc/tinc/vpn/tinc-up
+# generate keys
 tincd -K -n vpn
+# update public key
 echo "Address=${IP}" >> /etc/tinc/vpn/hosts/${hostname};
 echo "Port=${VPN_Port}" >> /etc/tinc/vpn/hosts/${hostname};
 echo "Subnet=${VPN_Subnet}" >> /etc/tinc/vpn/hosts/${hostname};

@@ -1,0 +1,2 @@
+#!/bin/sh 
+/sbin/ifconfig VPN_DEV VPN_IP netmask VPN_Netmask

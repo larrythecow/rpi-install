@@ -16,40 +16,42 @@
 #    Email: sid@projekt-turm.de
 
 function echocolor {
-	echo -e "\033[32m$1\033[0m";
-} 
+        echo -e "\033[32m$1\033[0m";
+}
+function cleanup {
+        echo -e "\033[31m installation canceled\033[0m";
+}
+trap cleanup EXIT;
 
 echo -e "\033[32m";
 read -e -p "please enter device [/dev/sd[a-z]] " device;
 echo -e "WARNING!";
 echo -e "========";
-echo -e "This will overwrite data on $device irrevocably.\n";
+echo -e "This will overwrite data on \033[1;32m$device\033[0;32m irrevocably.\n";
 read -p "Are you sure? (Type uppercase yes): " input;
-if [[ $input = YES ]] ; then
-	echo -e "\tOK";
-else
-	echo -e "\tERROR\n\tIf you are sure, please type UPPERCASE yes";
+if [[ $input != "YES" ]] ; then
+	echo -e "\033[31m\tERROR\n\tIf you are sure, please type UPPERCASE yes\033[0m"
 	exit 1;
 fi
 echo -e "\033[0m";
 
-echocolor "\tinstalling necessery applications";
+echocolor "installing necessery applications";
 apt-get update || exit 1
 apt-get install debootstrap dosfstools || exit 1
 
-echocolor "\tformating disk";
+echocolor "formating disk";
 mkfs.vfat "${device}1" || exit 1
 mkfs.ext4 "${device}2" || exit 1
 
-echocolor "\tmounting disk";
+echocolor "mounting disk";
 mount "${device}2" /mnt || exit 1
 mkdir /mnt/boot || exit 1
 mount "${device}1" /mnt/boot || exit 1
 
-echocolor "\trunning debootstrap";
+echocolor "running debootstrap";
 time debootstrap --arch armhf wheezy /mnt/ http://mirrordirector.raspbian.org/raspbian/  || exit 1
 
-echocolor "\trunning some postinstall and enter chroot";
+echocolor "running some postinstall and enter chroot";
 # copy apt only temporary because of public key of apt server!
 cp -a /etc/apt/* /mnt/etc/apt/ || exit 1
 cp -a /root/rpi-install  /mnt/root/  || exit 1
