@@ -59,5 +59,5 @@ cp -a /root/rpi-install  /mnt/root/  || exit 1
 mount --bind /dev/ /mnt/dev/ || exit 1
 mount --bind /proc/ /mnt/proc/ || exit 1
 mount --bind /sys/ /mnt/sys/ || exit 1
-chroot /mnt /root/rpi-install/chroot.sh || exit 1
+chroot /mnt /root/rpi-install/postinstall.sh || exit 1
 

@@ -16,7 +16,7 @@
 #    Author: imran shamshad
 #    Email: sid@projekt-turm.de
 
-source /root/rpi-install/setup.conf 
+source /root/rpi-install/postinstall.conf
 
 echo "${Packages}"
 echo -e "\tplease enter new root password";
