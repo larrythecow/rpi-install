@@ -10,7 +10,6 @@ It will ask for a device and uppercase yes.
 ToDo
 ----
 * automatically partiton and format disk
-* automatically copy files from PWD/config to /etc
 * set hosts hostname and so on
 * we want color
 * finish tinc installation

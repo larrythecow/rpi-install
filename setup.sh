@@ -15,7 +15,12 @@
 #    Author: imran shamshad
 #    Email: sid@projekt-turm.de
 
-read -p "please enter device [/dev/sd[a-z]] " device;
+function echocolor {
+	echo -e "\033[32m$1\033[0m";
+} 
+
+echo -e "\033[32m";
+read -e -p "please enter device [/dev/sd[a-z]] " device;
 echo -e "WARNING!";
 echo -e "========";
 echo -e "This will overwrite data on $device irrevocably.\n";
@@ -26,21 +31,25 @@ else
 	echo -e "\tERROR\n\tIf you are sure, please type UPPERCASE yes";
 	exit 1;
 fi
+echo -e "\033[0m";
 
-echo -e "\tformating disk";
+echocolor "\tinstalling necessery applications";
+apt-get update || exit 1
+apt-get install debootstrap dosfstools || exit 1
+
+echocolor "\tformating disk";
 mkfs.vfat "${device}1" || exit 1
 mkfs.ext4 "${device}2" || exit 1
 
-echo -e "\tmounting disk";
+echocolor "\tmounting disk";
 mount "${device}2" /mnt || exit 1
 mkdir /mnt/boot || exit 1
 mount "${device}1" /mnt/boot || exit 1
 
-echo -e "\trunning debootstrap";
-apt-get update || exit 1
-apt-get install debootstrap || exit 1
+echocolor "\trunning debootstrap";
 time debootstrap --arch armhf wheezy /mnt/ http://mirrordirector.raspbian.org/raspbian/  || exit 1
 
+echocolor "\trunning some postinstall and enter chroot";
 # copy apt only temporary because of public key of apt server!
 cp -a /etc/apt/* /mnt/etc/apt/ || exit 1
 cp -a /root/rpi-install  /mnt/root/  || exit 1

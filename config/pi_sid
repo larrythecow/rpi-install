@@ -1,5 +1,0 @@
-# temporary commented in 
-#Address=192.168.1.162 
-Port=2223 
-Subnet=192.168.240.0/24 
-Compression=9 

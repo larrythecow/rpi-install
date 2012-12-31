@@ -16,12 +16,14 @@
 #    Author: imran shamshad
 #    Email: sid@projekt-turm.de
 
-echo -e "\troot pwd, maybe you can del me";
+source=setup.conf || echo "could not find configfile" ; exit 1
+
+echo -e "\tplease enter new root password";
 passwd || exit 1
 
 echo -e "\tinstalling base packages"
 apt-get update || exit 1
-apt-get install git vim unzip openssh-server openssh-client tinc|| exit 1
+apt-get install git vim unzip openssh-server openssh-client tinc rsync|| exit 1
 
 echo -e "\tinstalling bootloader and kernel"
 cd /usr/src || exit 1
@@ -31,20 +33,17 @@ cp /usr/src/firmware-master/boot/* /boot/ || exit 1
 cp -av /usr/src/firmware-master/modules/ /lib/ || exit 1
 
 echo -e "\tinstalling config files"
-install /root/rpi-install/config/cmdline.txt	/boot/cmdline.txt
-install /root/rpi-install/config/fstab		/etc/fstab
-install /root/rpi-install/config/inputrc	/etc/inputrc
-install /root/rpi-install/config/interfaces	/etc/network/interfaces
-install /root/rpi-install/config/vimrc		/etc/vim/vimrc
-install /root/rpi-install/config/sshd_config	/etc/ssh/sshd_config
-#cp /etc/hosts /mnt/etc/ || exit 1
+rsync  /root/rpi-install/config/* / -av
 install /proc/mounts  /etc/mtab
+echo ${hostname} > /etc/hostname
+
 
 echo -e "\tconfiguring tinc"
-mkdir -p /etc/tinc/vpn/hosts/
-install /root/rpi-install/config/tinc-up	/etc/tinc/vpn/tinc-up
-install /root/rpi-install/config/tinc.conf	/etc/tinc/vpn/tinc.conf
+sed s/HOSTNAME/${hostname}/ /etc/tinc/vpn/tinc.conf > /etc/tinc/vpn/tinc.conf
 tincd -K -n vpn
-cat /root/rpi-install/config/pi_sid >> /etc/tinc/vpn/hosts/pisid
-install /root/rpi-install/config/main /etc/tinc/vpn/hosts/main
-echo "vpn" >> /etc/tinc/nets.boot
+echo "Address=${IP}" >> /etc/tinc/vpn/hosts/${hostname};
+echo "Port=${VPN_Port}" >> /etc/tinc/vpn/hosts/${hostname};
+echo "Subnet=${VPN_Subnet}" >> /etc/tinc/vpn/hosts/${hostname};
+echo "Compression=9" >> /etc/tinc/vpn/hosts/${hostname};
+
+echo -e "\tyou have to copy your public key to server!!!!";
