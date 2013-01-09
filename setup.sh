@@ -1,19 +1,19 @@
 #!/bin/bash
 
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#    Author: imran shamshad
-#    Email: sid@projekt-turm.de
+# Copyright (C) 2012/2013  Imran Shamshad <sid@projekt-turm.de>
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 function echocolor {
         echo -e "\033[32m$1\033[0m";
@@ -37,7 +37,7 @@ echo -e "\033[0m";
 
 echocolor "installing necessery applications";
 apt-get update || exit 1
-apt-get install debootstrap dosfstools
+apt-get install debootstrap dosfstools --yes
 
 echocolor "partitioning and formating disk";
 /root/rpi-install/3rdparty/omap3-mkcard.sh ${device} || exit 1

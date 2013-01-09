@@ -35,3 +35,5 @@ ToDo
 * choice between image and debootstrap
 * enable disable parts e.g. vpn
 * change partition script to add swap
+* add exeption if password change fails
+* use YES for apt-get
