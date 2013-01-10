@@ -54,7 +54,7 @@ sed -i s/VPN_DEV/${VPN_DEV}/g /etc/tinc/vpn/tinc.conf
 # update tinc-up
 sed -i s/VPN_DEV/${VPN_DEV}/g /etc/tinc/vpn/tinc-up
 sed -i s/VPN_IP/${VPN_IP}/g /etc/tinc/vpn/tinc-up
-sed -i s/VPN_Netmask/${VPN_Netmask}/g /etc/tinc/vpn/tinc-up
+sed -i s/VPN_NETMASK/${VPN_Netmask}/g /etc/tinc/vpn/tinc-up
 # generate keys
 tincd -K -n vpn
 # update public key
