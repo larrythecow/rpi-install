@@ -23,7 +23,7 @@ function cleanup {
 }
 trap cleanup EXIT;
 
-
+#todo subnet calc 
 source /root/rpi-install/postinstall.conf
 
 # random passwd or thread OR move to end 
@@ -40,8 +40,7 @@ cd /usr/src || exit 1
 wget -c https://github.com/raspberrypi/firmware/archive/master.zip || exit 1
 unzip -qq master.zip || exit 1
 rsync -a /usr/src/firmware-master/boot/* /boot/ || exit 1
-#** /lib/modules is not installed!
-rsync -a /usr/src/firmware-master/modules/ /lib/ || exit 1
+rsync -a /usr/src/firmware-master/modules /lib/ || exit 1
 rsync  -a /usr/src/firmware-master/hardfp/opt/vc /opt/ || exit 1
 
 echocolor "installing config files"
@@ -58,7 +57,7 @@ sed -i s/VPN_DEV/${VPN_DEV}/g /etc/tinc/vpn/tinc.conf
 # update tinc-up
 sed -i s/VPN_DEV/${VPN_DEV}/g /etc/tinc/vpn/tinc-up
 sed -i s/VPN_IP/${VPN_IP}/g /etc/tinc/vpn/tinc-up
-sed -i s/VPN_NETMASK/${VPN_Netmask}/g /etc/tinc/vpn/tinc-up
+sed -i s/VPN_NETMASK/${VPN_NETMASK}/g /etc/tinc/vpn/tinc-up
 # generate keys
 tincd -K -n vpn
 # update public key

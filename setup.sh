@@ -43,8 +43,7 @@ apt-get update || exit 1
 apt-get install debootstrap dosfstools bc --yes
 
 echocolor "partitioning and formating disk";
-/root/rpi-install/3rdparty/omap3-mkcard.sh ${device} || exit 1
-
+/root/rpi-install/3rdparty/omap3-mkcard.sh ${device} || exit 1#
 echocolor "mounting disk";
 mount "${device}2" /mnt || exit 1
 mkdir /mnt/boot || exit 1
