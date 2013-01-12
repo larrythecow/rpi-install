@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#** @todo make script dir indenpendend
+
 # Copyright (C) 2012/2013  Imran Shamshad <sid@projekt-turm.de>
 # 
 # This program is free software: you can redistribute it and/or modify
@@ -30,6 +32,7 @@ echo -e "========";
 echo -e "This will overwrite data on \033[1;31m${device}\033[0;32m irrevocably.";
 read -p "Are you sure? (Type uppercase yes): " input;
 if [[ $input != "YES" ]] ; then
+	# check if device exist
 	echo -e "\033[31m\tERROR\nIf you are sure, please type UPPERCASE yes\033[0m"
 	exit 1;
 fi
@@ -37,7 +40,7 @@ echo -e "\033[0m";
 
 echocolor "installing necessery applications";
 apt-get update || exit 1
-apt-get install debootstrap dosfstools --yes
+apt-get install debootstrap dosfstools bc --yes
 
 echocolor "partitioning and formating disk";
 /root/rpi-install/3rdparty/omap3-mkcard.sh ${device} || exit 1
@@ -53,6 +56,7 @@ time debootstrap --arch armhf wheezy /mnt/ http://mirrordirector.raspbian.org/ra
 echocolor "running some postinstall and enter chroot";
 # copy apt only temporary because of public key of apt server!
 cp -a /etc/apt/* /mnt/etc/apt/ || exit 1
+#debugme as sudo!!!!
 cp -a /root/rpi-install  /mnt/root/  || exit 1
 
 mount --bind /dev/ /mnt/dev/ || exit 1

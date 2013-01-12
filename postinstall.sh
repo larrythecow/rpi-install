@@ -26,6 +26,7 @@ trap cleanup EXIT;
 
 source /root/rpi-install/postinstall.conf
 
+# random passwd or thread OR move to end 
 echocolor "please enter new root password";
 passwd 
 
@@ -33,11 +34,13 @@ echocolor "installing base packages"
 apt-get update || exit 1
 apt-get install ${PACKAGES=} --yes|| exit 1
 
+
 echocolor "installing bootloader and kernel"
 cd /usr/src || exit 1
 wget -c https://github.com/raspberrypi/firmware/archive/master.zip || exit 1
 unzip -qq master.zip || exit 1
 rsync -a /usr/src/firmware-master/boot/* /boot/ || exit 1
+#** /lib/modules is not installed!
 rsync -a /usr/src/firmware-master/modules/ /lib/ || exit 1
 rsync  -a /usr/src/firmware-master/hardfp/opt/vc /opt/ || exit 1
 
@@ -47,6 +50,7 @@ install /proc/mounts  /etc/mtab
 echo ${HOSTNAME} > /etc/hostname
 locale-gen
 
+#** keygeneration may be failed!!!!
 echocolor "configuring tinc"
 # update tinc.conf
 sed -i s/HOSTNAME/${HOSTNAME}/g /etc/tinc/vpn/tinc.conf
@@ -58,12 +62,13 @@ sed -i s/VPN_NETMASK/${VPN_Netmask}/g /etc/tinc/vpn/tinc-up
 # generate keys
 tincd -K -n vpn
 # update public key
-echo "Address=${IP}" >> /etc/tinc/vpn/hosts/${HOSTNAME};
+## WARNING! tinc pub keys maybe not transvered echo "Address=${IP}" >> /etc/tinc/vpn/hosts/${HOSTNAME};
 echo "Port=${VPN_PORT}" >> /etc/tinc/vpn/hosts/${HOSTNAME};
 echo "Subnet=${VPN_SUBNET}" >> /etc/tinc/vpn/hosts/${HOSTNAME};
 echo "Compression=9" >> /etc/tinc/vpn/hosts/${HOSTNAME};
 
-apt-get install munin --yes || exit 1
-sed -i s/localhost.localdomain/${HOSTNAME}.${DOMAIN}/g /etc/munin/munin.conf
+echocolor "install munin"
+apt-get install munin bsd-mailx --yes || exit 1
+#sed -i s/localhost.localdomain/${HOSTNAME}.${DOMAIN}/g /etc/munin/munin.conf
 echo "cidr_allow ${VPN_SUBNET}" >> /etc/munin/munin-node.conf
 echocolor "you have to copy your public key to server!!!!\nplease ignore the following failture message";
