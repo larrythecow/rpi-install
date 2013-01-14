@@ -49,8 +49,10 @@ install /proc/mounts  /etc/mtab
 echo ${HOSTNAME} > /etc/hostname
 locale-gen
 
-#** keygeneration may be failed!!!!
 echocolor "configuring tinc"
+apt-get install liblzo2-2
+cd /root/rpi-install/
+dpkg -i packages/tinc_1.1pre4-1_armhf.deb
 # update tinc.conf
 sed -i s/HOSTNAME/${HOSTNAME}/g /etc/tinc/vpn/tinc.conf
 sed -i s/VPN_DEV/${VPN_DEV}/g /etc/tinc/vpn/tinc.conf

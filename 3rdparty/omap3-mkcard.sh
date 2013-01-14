@@ -38,7 +38,7 @@ echo ,9,0x0C,*
 echo ,,,-
 } | sfdisk -D -H 255 -S 63 -C $CYLINDERS $DRIVE
 
-sleep 1
+sleep 5 
 
 
 #if [ -x `which kpartx` ]; then
