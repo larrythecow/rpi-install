@@ -31,9 +31,7 @@ ToDo
 ToDo
 ----
 * add debugflag, and print to stdout and stderr
-* If IP(IP/DHCP), Subnet, GW is set, change /etc/network/interfaces
 * choice between image and debootstrap
 * enable disable parts e.g. vpn
 * change partition script to add swap
 * add exeption if password change fails
-* use YES for apt-get

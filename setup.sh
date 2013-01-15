@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#** @todo make script dir indenpendend
-
 # Copyright (C) 2012/2013  Imran Shamshad <sid@projekt-turm.de>
 # 
 # This program is free software: you can redistribute it and/or modify
@@ -17,9 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-function echocolor {
-        echo -e "\033[32m$1\033[0m";
-}
+
+dirname=`dirname $0`
+
+source $dirname/lib/echocolor.sh
+source $dirname/postinstall.conf
+
 function cleanup {
         echo -e "\033[31minstallation canceled\033[0m";
 }
@@ -42,24 +43,22 @@ echocolor "installing necessery applications";
 apt-get update || exit 1
 apt-get install debootstrap dosfstools bc --yes
 
-echocolor "partitioning and formating disk";
-/root/rpi-install/3rdparty/omap3-mkcard.sh ${device} || exit 1#
+echocolor "partitioning, formating and mounting disk";
+$dirname/lib/3rdparty/omap3-mkcard.sh ${device} || exit 1#
 echocolor "mounting disk";
-mount "${device}2" /mnt || exit 1
-mkdir /mnt/boot || exit 1
-mount "${device}1" /mnt/boot || exit 1
+
+echocolor "mounting disks"
+source lib/mount_disk.sh
+mount_disk $device
 
 echocolor "running debootstrap";
 time debootstrap --arch armhf wheezy /mnt/ http://mirrordirector.raspbian.org/raspbian/  || exit 1
 
 echocolor "running some postinstall and enter chroot";
 # copy apt only temporary because of public key of apt server!
-cp -a /etc/apt/* /mnt/etc/apt/ || exit 1
-#debugme as sudo!!!!
-cp -a /root/rpi-install  /mnt/root/  || exit 1
+# cp -a /etc/apt/* /mnt/etc/apt/ || exit 1
+apt-get install raspbian-archive-keyring
+cp -a $dirname/../rpi-install  /mnt/root/  || exit 1
 
-mount --bind /dev/ /mnt/dev/ || exit 1
-mount --bind /proc/ /mnt/proc/ || exit 1
-mount --bind /sys/ /mnt/sys/ || exit 1
 chroot /mnt /root/rpi-install/postinstall.sh || exit 1
 
