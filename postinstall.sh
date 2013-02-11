@@ -20,37 +20,32 @@ dirname=`dirname $0`
 source $dirname/lib/echocolor.sh 
 source $dirname/postinstall.conf
 
-function cleanup {
-        echo -e "\033[31minstallation canceled\033[0m";
-}
-trap cleanup EXIT;
-
 echok "installing base packages"
 apt-get update || exit 1
-apt-get install ${PACKAGES=} --yes|| exit 1
+apt-get install ${PACKAGES=} --yes|| echoexit "could not install optional packages"
 
 echok "installing bootloader and kernel"
-source $dirname/lib/install_kernel.sh
+source $dirname/lib/install_kernel.sh || echoexit "could not install kernel"
 install_kernel
 
 echok "installing config files"
-source $dirname/lib/install_config.sh
+source $dirname/lib/install_config.sh || echoexigt "error while copying config files"
 install_config
 
 echok "configuring network"
-source $dirname/lib/configure_net.sh
+source $dirname/lib/configure_net.sh || echoexit "could not configure network"
 configure_net
 
 echok "configuring tinc"
-source $dirname/lib/install_tinc.sh
+source $dirname/lib/install_tinc.sh || echowarn "error while tinc configuration\nVPN will probally not work"
 install_tinc
 
 echok "install munin"
-source $dirname/lib/install_munin.sh
+source $dirname/lib/install_munin.sh || echowarn "error while munin configuration"
 install_munin
 
 # random passwd or thread OR move to end 
 echok "please enter new root password";
-passwd
+passwd || echowarn "error while setting password\n please set it manually"
 
-echok "you have to copy your public key to server!!!!\nplease ignore the following failture message";
+echok "you have to copy your public key to server!!!!;

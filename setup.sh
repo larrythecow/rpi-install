@@ -21,11 +21,6 @@ dirname=`dirname $0`
 source $dirname/lib/echocolor.sh
 source $dirname/postinstall.conf
 
-function cleanup {
-        echo -e "\033[31minstallation canceled\033[0m";
-}
-trap cleanup EXIT;
-
 echo -e "\033[32m";
 read -e -p "please enter device [/dev/sd[a-z]]: " device;
 echo -e "\n\033[1;31mWARNING!\033[0;32m";
@@ -35,29 +30,28 @@ read -p "Are you sure? (Type uppercase yes): " input;
 if [[ $input != "YES" ]] ; then
 	# check if device exist
 	echo -e "\033[31m\tERROR\nIf you are sure, please type UPPERCASE yes\033[0m"
-	exit 1;
+	echoexit "Installation aborted";
 fi
 echo -e "\033[0m";
 
 echok "installing necessery applications";
 apt-get update || exit 1
-apt-get install debootstrap dosfstools bc --yes
+apt-get install debootstrap dosfstools bc --yes || echoexit "unable to install installation packages"
 
 echok "partitioning, formating and mounting disk";
-$dirname/lib/3rdparty/omap3-mkcard.sh ${device} || exit 1
+$dirname/lib/3rdparty/omap3-mkcard.sh ${device} || echoexit "unable to partition disk"
 
 echok "mounting disks"
 source lib/mount_disk.sh
 mount_disk $device
 
 echok "running debootstrap";
-time debootstrap --arch armhf wheezy /mnt/ http://mirrordirector.raspbian.org/raspbian/  || exit 1
+time debootstrap --arch armhf wheezy /mnt/ http://mirrordirector.raspbian.org/raspbian/  || echoexit "error while running debootstrap"
 
 echok "running some postinstall and enter chroot";
 # copy apt only temporary because of public key of apt server!
 # cp -a /etc/apt/* /mnt/etc/apt/ || exit 1
 apt-get install raspbian-archive-keyring
-cp -a $dirname/../rpi-install  /mnt/root/  || exit 1
+cp -a $dirname/../rpi-install  /mnt/root/
 
-chroot /mnt /root/rpi-install/postinstall.sh || exit 1
-
+chroot /mnt /root/rpi-install/postinstall.sh || echoexit "postinstall returned error"
