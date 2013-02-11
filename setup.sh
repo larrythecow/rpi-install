@@ -39,22 +39,21 @@ if [[ $input != "YES" ]] ; then
 fi
 echo -e "\033[0m";
 
-echocolor "installing necessery applications";
+echok "installing necessery applications";
 apt-get update || exit 1
 apt-get install debootstrap dosfstools bc --yes
 
-echocolor "partitioning, formating and mounting disk";
-$dirname/lib/3rdparty/omap3-mkcard.sh ${device} || exit 1#
-echocolor "mounting disk";
+echok "partitioning, formating and mounting disk";
+$dirname/lib/3rdparty/omap3-mkcard.sh ${device} || exit 1
 
-echocolor "mounting disks"
+echok "mounting disks"
 source lib/mount_disk.sh
 mount_disk $device
 
-echocolor "running debootstrap";
+echok "running debootstrap";
 time debootstrap --arch armhf wheezy /mnt/ http://mirrordirector.raspbian.org/raspbian/  || exit 1
 
-echocolor "running some postinstall and enter chroot";
+echok "running some postinstall and enter chroot";
 # copy apt only temporary because of public key of apt server!
 # cp -a /etc/apt/* /mnt/etc/apt/ || exit 1
 apt-get install raspbian-archive-keyring

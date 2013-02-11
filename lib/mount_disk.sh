@@ -8,8 +8,11 @@ fi
 
 mount "${1}2" /mnt || exit 1
 mkdir /mnt/boot || exit 1
-mount "${$1}1" /mnt/boot || exit 1
+mount "${1}1" /mnt/boot || exit 1
+mkdir  /mnt/dev/
 mount --bind /dev/ /mnt/dev/ || exit 1
+mkdir /mnt/proc/
 mount --bind /proc/ /mnt/proc/ || exit 1
+mkdir /mnt/sys/
 mount --bind /sys/ /mnt/sys/ || exit 1
 }

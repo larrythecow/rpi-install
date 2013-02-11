@@ -25,32 +25,32 @@ function cleanup {
 }
 trap cleanup EXIT;
 
-echocolor "installing base packages"
+echok "installing base packages"
 apt-get update || exit 1
 apt-get install ${PACKAGES=} --yes|| exit 1
 
-echocolor "installing bootloader and kernel"
+echok "installing bootloader and kernel"
 source $dirname/lib/install_kernel.sh
 install_kernel
 
-echocolor "installing config files"
+echok "installing config files"
 source $dirname/lib/install_config.sh
 install_config
 
-echocolor "configuring network"
+echok "configuring network"
 source $dirname/lib/configure_net.sh
 configure_net
 
-echocolor "configuring tinc"
+echok "configuring tinc"
 source $dirname/lib/install_tinc.sh
 install_tinc
 
-echocolor "install munin"
+echok "install munin"
 source $dirname/lib/install_munin.sh
 install_munin
 
 # random passwd or thread OR move to end 
-echocolor "please enter new root password";
+echok "please enter new root password";
 passwd
 
-echocolor "you have to copy your public key to server!!!!\nplease ignore the following failture message";
+echok "you have to copy your public key to server!!!!\nplease ignore the following failture message";
