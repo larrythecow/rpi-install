@@ -14,7 +14,8 @@ function install_tinc(){
 	sed -i s/VPN_IP/${VPN_IP}/g /etc/tinc/vpn/tinc-up
 	sed -i s/VPN_NETMASK/${VPN_NETMASK}/g /etc/tinc/vpn/tinc-up
 	# generate keys
-	tincd -K -n vpn
+	#tincd -K -n vpn
+	echo -ne '\n' |tincctl generate-keys -n vpn
 	# update public key
 	echo "Port=${VPN_PORT}" >> /etc/tinc/vpn/hosts/${HOSTNAME};
 	echo "Subnet=${VPN_SUBNET}" >> /etc/tinc/vpn/hosts/${HOSTNAME};

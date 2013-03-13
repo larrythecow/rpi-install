@@ -1,0 +1,11 @@
+#
+# cron-jobs for sensors 
+#
+
+MAILTO=root
+
+# If the APT plugin is enabled, update packages databases approx. once
+# an hour (12 invokations an hour, 1 in 12 chance that the update will
+# happen), but ensure that there will never be more than two hour (7200
+# seconds) interval between updates..
+3,8,13,18,23,28,33,38,43,48,53,58 * * * * root /opt/rpi-sensors/bin/cron.pl 

@@ -44,6 +44,13 @@ echok "install munin"
 source $dirname/lib/install_munin.sh || echowarn "error while munin configuration"
 install_munin
 
+echok "configure avahi"
+sed -i s/"#allow-interfaces=eth0"/"allow-interfaces=vpn-dev"/g /etc/avahi/avahi-daemon.conf
+
+echok "install rpisensors"
+source $dirname/lib/install_rpisensors.sh || echoexit "could not install rpi-sensors"
+install_rpisensors
+
 # random passwd or thread OR move to end 
 echok "please enter new root password";
 passwd || echowarn "error while setting password\n please set it manually"
